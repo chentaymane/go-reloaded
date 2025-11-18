@@ -1,0 +1,5 @@
+Simply add 42 (hex) and 10 (bin) and you will see the result is 68.
+Welcome to the Brooklyn bridge (cap) hh
+I should stop SHOUTING (low)
+Ready, set, go (up) !
+hh This is so      Exciting (up, 2)
