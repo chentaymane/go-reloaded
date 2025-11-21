@@ -7,15 +7,21 @@ import (
 	"strings"
 )
 
-func Hex(arg string) int {
+func Hex(arg string) int {                        
 	value := arg
-	result, _ := strconv.ParseInt(value, 16, 64)
+	result, err := strconv.ParseInt(value, 16, 64)
+	if err != nil {
+		return -1
+	}
 	return int(result)
 }
 
 func Bin(arg string) int {
 	value := arg
-	result, _ := strconv.ParseInt(value, 2, 64)
+	result, err := strconv.ParseInt(value, 2, 64)
+	if err != nil {
+		return -1
+	}
 	return int(result)
 }
 
@@ -64,6 +70,92 @@ func Up(s string) string {
 	return result
 }
 
+func AutoCorrect(words []string) []string {
+    for i := 0; i < len(words); i++ {
+        r := words[i]
+		fmt.Println(words)
+        if r == "(hex)" && i > 0 {
+			
+            decimal := Hex(words[i-1])
+            if decimal != -1 {
+                words[i-1] = strconv.Itoa(decimal)
+            }
+            words[i] = ""
+            i = 0
+        }
+
+        if r == "(bin)" && i > 0 {
+            decimal := Bin(words[i-1])
+            if decimal != -1 {
+                words[i-1] = strconv.Itoa(decimal)
+            }
+            words[i] = ""
+            i = 0
+
+        }
+
+        if r == "(cap)" && i > 0 {
+            words[i-1] = Cap(words[i-1])
+            words[i] = ""
+            i = 0
+        }
+
+        if r == "(cap," {
+            valueStr := words[i+1]
+            valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
+
+            for j := i - 1; j >= i-valueInt; j-- {
+                words[j] = Cap(words[j])
+            }
+
+            words[i] = ""
+            words[i+1] = ""
+            i = 0
+        }
+
+        if r == "(low)" && i > 0 {
+            words[i-1] = Low(words[i-1])
+            words[i] = ""
+            i = 0
+        }
+
+        if r == "(low," {
+            valueStr := words[i+1]
+            valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
+
+            for j := i - 1; j >= i-valueInt; j-- {
+                words[j] = Low(words[j])
+            }
+
+            words[i] = ""
+            words[i+1] = ""
+            i = 0
+        }
+
+        if r == "(up)" && i > 0 {
+            words[i-1] = Up(words[i-1])
+            words[i] = ""
+            i = 0
+        }
+
+        if r == "(up," {
+            valueStr := words[i+1]
+            valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
+
+            for j := i - 1; j >= i-valueInt; j-- {
+                words[j] = Up(words[j])
+            }
+
+            words[i] = ""
+            words[i+1] = ""
+            i = 0
+        }
+		
+    }
+
+    return words
+}
+
 func main() {
 	content, _ := os.ReadFile("input.txt")
 	lines := strings.Split(string(content), "\n")
@@ -71,6 +163,7 @@ func main() {
 
 	for i, r := range lines {
 		for _, k := range r {
+			
 			if k == '.' || k == ',' || k == '!' || k == '?' || k == ':' || k == ';' {
 				str += string(k) + " "
 			} else {
@@ -101,101 +194,7 @@ func main() {
 
 	fmt.Println(words)
 	fmt.Println()
-	for i := 0; i < len(words); i++ {
-    r := words[i]
 
-    // ---------------- HEX ------------------
-    if r == "(hex)" && i > 0 {
-        decimal := Hex(words[i-1])
-        words[i-1] = strconv.Itoa(decimal)
-        words[i] = ""
-    }
-
-    if strings.HasSuffix(r, "(hex)") {
-        base := strings.TrimSuffix(r, "(hex)")
-        decimal := Hex(base)
-        words[i] = strconv.Itoa(decimal)
-    }
-
-    // ---------------- BIN ------------------
-    if r == "(bin)" && i > 0 {
-        decimal := Bin(words[i-1])
-        words[i-1] = strconv.Itoa(decimal)
-        words[i] = ""
-    }
-
-    if strings.HasSuffix(r, "(bin)") {
-        base := strings.TrimSuffix(r, "(bin)")
-        decimal := Bin(base)
-        words[i] = strconv.Itoa(decimal)
-    }
-
-    // ---------------- CAP ------------------
-    if r == "(cap)" && i > 0 {
-        words[i-1] = Cap(words[i-1])
-        words[i] = ""
-    }
-
-    if strings.HasSuffix(r, "(cap)") {
-        base := strings.TrimSuffix(r, "(cap)")
-        words[i] = Cap(base)
-    }
-
-    // cap with number: (cap, X)
-    if r == "(cap," {
-        valueStr := words[i+1]
-        valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
-        for j := i - 1; j >= i-valueInt; j-- {
-            words[j] = Cap(words[j])
-        }
-        words[i] = ""
-        words[i+1] = ""
-    }
-
-    // ---------------- LOW ------------------
-    if r == "(low)" && i > 0 {
-        words[i-1] = Low(words[i-1])
-        words[i] = ""
-    }
-
-    if strings.HasSuffix(r, "(low)") {
-        base := strings.TrimSuffix(r, "(low)")
-        words[i] = Low(base)
-    }
-
-    // low with number: (low, X)
-    if r == "(low," {
-        valueStr := words[i+1]
-        valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
-        for j := i - 1; j >= i-valueInt; j-- {
-            words[j] = Low(words[j])
-        }
-        words[i] = ""
-        words[i+1] = ""
-    }
-
-    // ---------------- UP ------------------
-    if r == "(up)" && i > 0 {
-        words[i-1] = Up(words[i-1])
-        words[i] = ""
-    }
-
-    if strings.HasSuffix(r, "(up)") {
-        base := strings.TrimSuffix(r, "(up)")
-        words[i] = Up(base)
-    }
-
-    // up with number: (up, X)
-    if r == "(up," {
-        valueStr := words[i+1]
-        valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
-        for j := i - 1; j >= i-valueInt; j-- {
-            words[j] = Up(words[j])
-        }
-        words[i] = ""
-        words[i+1] = ""
-    }
-}
 
 	wordsClean := []string{}
 	for _, r := range words {
@@ -219,14 +218,17 @@ func main() {
 			words = wordsF
 			i--
 		}
+		AutoCorrect(words)
+
 	}
+
 
 	for i := 0; i < len(words); i++ {
 		r := words[i]
 		if r == "'" {
 			if i+1 < len(words) {
 				words[i+1] = r + words[i+1]
-				words[i] = ""
+				words[i] = "" 
 				wordsF := []string{}
 				for _, w := range words {
 					if w != "" {
@@ -238,11 +240,11 @@ func main() {
 			}
 		} else if strings.HasSuffix(r, "'") && len(r) > 1 {
 			continue
-		} else if strings.HasPrefix(r, "'") {
+		} else if strings.HasPrefix(r, "'") && len(r) > 1 {
 			words[i-1] = words[i-1] + r
 			words[i] = ""
 			wordsF := []string{}
-			for _, w := range words {
+		for _, w := range words {
 				if w != "" {
 					wordsF = append(wordsF, w)
 				}
@@ -251,7 +253,15 @@ func main() {
 			i--
 		}
 	}
-
+	for i, r := range words {
+		if i+1 < len(words) {
+			if (r == "a" || r == "A") && (strings.HasPrefix(Low(words[i+1]), "a") || strings.HasPrefix(Low(words[i+1]), "e") || strings.HasPrefix(Low(words[i+1]), "i") || strings.HasPrefix(Low(words[i+1]), "o") || strings.HasPrefix(Low(words[i+1]), "u") || strings.HasPrefix(Low(words[i+1]), "h")) {
+				words[i] = words[i] + "n"
+			}
+		}
+	}
+	fmt.Println(words)
+	fmt.Println()
 	content = []byte(strings.Join(words, " "))
 	fmt.Println(string(content))
 }
