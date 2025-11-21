@@ -10,10 +10,10 @@ go run . sample.txt result.txt
 There it was. a Amazing rock! a
 I don't ,mind ' being 'here .
 gg ' a sss fffffffffff' hh
-gg ' a' hh
+gg ' a' hh 
 ' gg ' , ' hh '
 lot (cap)
-aymne (up)
+sl anaymne (up)
 
 1E (hex)
 10 (bin)
