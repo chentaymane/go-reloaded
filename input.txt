@@ -22,5 +22,8 @@ fff '   éxx ' (cap)
 lot (Cap) (low)
 sl anaymne (up)
 
+ a uto 
+' a uto ' 
+
 1E (hex)
 10 (bin)

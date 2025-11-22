@@ -14,6 +14,7 @@ gg ' a' hh
 ' gg ' , ' hh '
 lot (cap)
 sl anaymne (up)
+'a uto' 
 
 1E (hex)
 10 (bin)

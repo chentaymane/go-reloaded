@@ -5,7 +5,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	 "unicode"
+	"unicode"
 )
 
 func Hex(arg string) int {
@@ -26,28 +26,25 @@ func Bin(arg string) int {
 	return int(result)
 }
 
-
-
 func Cap(s string) string {
-    runes := []rune(s)
-    isNewWord := true
+	runes := []rune(s)
+	isNewWord := true
 
-    for i := 0; i < len(runes); i++ {
-        if unicode.IsLetter(runes[i]) || unicode.IsDigit(runes[i]) {
-            if isNewWord {
-                runes[i] = unicode.ToUpper(runes[i])
-                isNewWord = false
-            } else {
-                runes[i] = unicode.ToLower(runes[i])
-            }
-        } else {
-            isNewWord = true
-        }
-    }
+	for i := 0; i < len(runes); i++ {
+		if unicode.IsLetter(runes[i]) || unicode.IsDigit(runes[i]) {
+			if isNewWord {
+				runes[i] = unicode.ToUpper(runes[i])
+				isNewWord = false
+			} else {
+				runes[i] = unicode.ToLower(runes[i])
+			}
+		} else {
+			isNewWord = true
+		}
+	}
 
-    return string(runes)
+	return string(runes)
 }
-
 
 func Low(s string) string {
 	var result string
@@ -74,28 +71,27 @@ func Up(s string) string {
 func AutoCorrect(words []string) []string {
 	for i := 0; i < len(words); i++ {
 		r := words[i]
-		
-		if r == "(hex)"  {
+
+		if r == "(hex)" {
 			if i > 0 {
 				decimal := Hex(words[i-1])
-			if decimal != -1 {
-				words[i-1] = strconv.Itoa(decimal)
+				if decimal != -1 {
+					words[i-1] = strconv.Itoa(decimal)
+				}
 			}
-			}
-			
+
 			words[i] = ""
-			
+
 		}
 
 		if r == "(bin)" {
 			if i > 0 {
-			decimal := Bin(words[i-1])
-			if decimal != -1 {
-				words[i-1] = strconv.Itoa(decimal)
+				decimal := Bin(words[i-1])
+				if decimal != -1 {
+					words[i-1] = strconv.Itoa(decimal)
+				}
 			}
-		}
 			words[i] = ""
-			
 
 		}
 
@@ -103,69 +99,67 @@ func AutoCorrect(words []string) []string {
 			if i > 0 {
 				words[i-1] = Cap(words[i-1])
 			}
-			
+
 			words[i] = ""
-			
+
 		}
 
 		if r == "(cap," {
-			
+
 			valueStr := words[i+1]
 			valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
 			if i >= valueInt {
 				for j := i - 1; j >= i-valueInt; j-- {
-				words[j] = Cap(words[j])
+					words[j] = Cap(words[j])
+				}
 			}
-			}
-
-			
 
 			words[i] = ""
 			words[i+1] = ""
-			
+
 		}
 
-		if r == "(low)"  {
+		if r == "(low)" {
 			if i > 0 {
 				words[i-1] = Low(words[i-1])
 			}
-			
+
 			words[i] = ""
-			
+
 		}
 
 		if r == "(low," {
 			valueStr := words[i+1]
 			valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
 			if i >= valueInt {
-			for j := i - 1; j >= i-valueInt; j-- {
-				words[j] = Low(words[j])
+				for j := i - 1; j >= i-valueInt; j-- {
+					words[j] = Low(words[j])
+				}
 			}
-		}
 			words[i] = ""
 			words[i+1] = ""
-			
+
 		}
 
-		if r == "(up)"  {
+		if r == "(up)" {
 			if i-1 > 0 {
-			words[i-1] = Up(words[i-1])
+				words[i-1] = Up(words[i-1])
 			}
 			words[i] = ""
-			
+
 		}
 
 		if r == "(up," {
 			valueStr := words[i+1]
 			valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
 			if i >= valueInt {
-			for j := i - 1; j >= i-valueInt; j-- {
-				words[j] = Up(words[j])
+				for j := i - 1; j >= i-valueInt; j-- {
+					words[j] = Up(words[j])
+				}
 			}
-		}
 			words[i] = ""
 			words[i+1] = ""
-			
+
 		}
 	}
 
@@ -226,7 +220,6 @@ func FixQuotes(lines []string) [][]string {
 
 			}
 		}
-		fmt.Println(temp)
 		for i := 0; i < len(temp); i++ {
 			r := temp[i]
 			if r == "'" && first && i+1 < len(temp) {
@@ -234,7 +227,7 @@ func FixQuotes(lines []string) [][]string {
 				temp[i] = ""
 				first = false
 				continue
-			} else if r == "'"  {
+			} else if r == "'" {
 				temp[i-1] = temp[i-1] + "'"
 				temp[i] = ""
 				first = true
@@ -242,7 +235,7 @@ func FixQuotes(lines []string) [][]string {
 
 		}
 		first = true
-		
+
 		words = temp
 		words = Clean(words)
 		for i := 0; i < len(words); i++ {
@@ -251,71 +244,63 @@ func FixQuotes(lines []string) [][]string {
 			if r == "." || r == "," || r == "!" || r == "?" || r == ":" || r == ";" {
 				words[i-1] = words[i-1] + r
 				words[i] = ""
-				wordsF := []string{}
-				for _, r := range words {
-					if r != "" {
-						wordsF = append(wordsF, r)
-					}
-				}
-				words = wordsF
+				words = Clean(words)
 				i = 0
-			
-				
+
 			}
-			AutoCorrect(words)
+			words = AutoCorrect(words)
 		}
 		temp = []string{}
 		words = AtoAn(words)
 		result = append(result, words)
-		
+
 	}
 
 	return result
 
 }
 func main() {
-    if len(os.Args) < 3 {
-        fmt.Println("Usage: go run . input.txt output.txt")
-        return
-    }
+	if len(os.Args) < 3 {
+		fmt.Println("Usage: go run . input.txt output.txt")
+		return
+	}
 
-    inputFile := os.Args[1]
-    outputFile := os.Args[2]
+	inputFile := os.Args[1]
+	outputFile := os.Args[2]
 
-    // Check file extensions
-    if !strings.HasSuffix(strings.ToLower(inputFile), ".txt") {
-        fmt.Println("Error: input file must have .txt extension")
-        return
-    }
+	// Check file extensions
+	if !strings.HasSuffix(strings.ToLower(inputFile), ".txt") {
+		fmt.Println("Error: input file must have .txt extension")
+		return
+	}
 
-    if !strings.HasSuffix(strings.ToLower(outputFile), ".txt") {
-        fmt.Println("Error: output file must have .txt extension")
-        return
-    }
+	if !strings.HasSuffix(strings.ToLower(outputFile), ".txt") {
+		fmt.Println("Error: output file must have .txt extension")
+		return
+	}
 
-    content, err := os.ReadFile(inputFile)
-    if err != nil {
-        fmt.Println("Error reading input:", err)
-        return
-    }
+	content, err := os.ReadFile(inputFile)
+	if err != nil {
+		fmt.Println("Error reading input:", err)
+		return
+	}
 
-    lines := strings.Split(string(content), "\n")
-    result := FixQuotes(lines)
-    resultF := ""
+	lines := strings.Split(string(content), "\n")
+	result := FixQuotes(lines)
+	resultF := ""
 
-    for i, r := range result {
-        for _, k := range Clean(r) {
-            resultF += k + " "
-        }
-        if i < len(result)-1 {
-            resultF += "\n"
-        }
-    }
+	for i, r := range result {
+		for _, k := range Clean(r) {
+			resultF += k + " "
+		}
+		if i < len(result)-1 {
+			resultF += "\n"
+		}
+	}
 
-    err = os.WriteFile(outputFile, []byte(resultF), 0644)
-    if err != nil {
-        fmt.Println("Error writing output:", err)
-        return
-    }
+	err = os.WriteFile(outputFile, []byte(resultF), 0644)
+	if err != nil {
+		fmt.Println("Error writing output:", err)
+		return
+	}
 }
-
