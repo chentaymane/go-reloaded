@@ -148,7 +148,7 @@ func AutoCorrect(words []string) []string {
 		}
 
 		if r == "(up)"  {
-			if i > 0 {
+			if i-1 > 0 {
 			words[i-1] = Up(words[i-1])
 			}
 			words[i] = ""
@@ -226,6 +226,7 @@ func FixQuotes(lines []string) [][]string {
 
 			}
 		}
+		fmt.Println(temp)
 		for i := 0; i < len(temp); i++ {
 			r := temp[i]
 			if r == "'" && first && i+1 < len(temp) {
@@ -241,8 +242,9 @@ func FixQuotes(lines []string) [][]string {
 
 		}
 		first = true
+		
 		words = temp
-
+		words = Clean(words)
 		for i := 0; i < len(words); i++ {
 
 			r := words[i]
@@ -257,6 +259,8 @@ func FixQuotes(lines []string) [][]string {
 				}
 				words = wordsF
 				i = 0
+			
+				
 			}
 			AutoCorrect(words)
 		}

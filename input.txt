@@ -14,10 +14,11 @@ gg ' a' hh
 ' gg ' , ' hh '
 a'
 b'
-b '
+fff '   éxx ' (cap)
+"" (up)
 ' n 
 'f' f 'f'
-'' '' ''
+'dont' f 'dont ' 
 lot (Cap) (low)
 sl anaymne (up)
 
