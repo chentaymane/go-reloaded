@@ -12,8 +12,14 @@ I don't ,mind ' being 'here .
 gg ' a sss fffffffffff' hh
 gg ' a' hh 
 ' gg ' , ' hh '
-lot (cap)
-sl anaymne  (UP (low) , 2)
+a'
+b'
+b '
+' n 
+'f' f 'f'
+'' '' ''
+lot (Cap) (low)
+sl anaymne (up)
 
 1E (hex)
 10 (bin)

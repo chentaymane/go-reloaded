@@ -5,6 +5,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	 "unicode"
 )
 
 func Hex(arg string) int {
@@ -25,28 +26,28 @@ func Bin(arg string) int {
 	return int(result)
 }
 
-func Cap(s string) string {
-	runes := []rune(s)
-	isNewWord := true
 
-	for i := 0; i < len(runes); i++ {
-		if (runes[i] >= 'A' && runes[i] <= 'Z') || (runes[i] >= 'a' && runes[i] <= 'z') || (runes[i] >= '0' && runes[i] <= '9') {
-			if isNewWord {
-				if runes[i] >= 'a' && runes[i] <= 'z' {
-					runes[i] = runes[i] - 'a' + 'A'
-				}
-				isNewWord = false
-			} else {
-				if runes[i] >= 'A' && runes[i] <= 'Z' {
-					runes[i] = runes[i] - 'A' + 'a'
-				}
-			}
-		} else {
-			isNewWord = true
-		}
-	}
-	return string(runes)
+
+func Cap(s string) string {
+    runes := []rune(s)
+    isNewWord := true
+
+    for i := 0; i < len(runes); i++ {
+        if unicode.IsLetter(runes[i]) || unicode.IsDigit(runes[i]) {
+            if isNewWord {
+                runes[i] = unicode.ToUpper(runes[i])
+                isNewWord = false
+            } else {
+                runes[i] = unicode.ToLower(runes[i])
+            }
+        } else {
+            isNewWord = true
+        }
+    }
+
+    return string(runes)
 }
+
 
 func Low(s string) string {
 	var result string
@@ -73,83 +74,99 @@ func Up(s string) string {
 func AutoCorrect(words []string) []string {
 	for i := 0; i < len(words); i++ {
 		r := words[i]
-		if r == "(hex)" && i > 0 {
-
-			decimal := Hex(words[i-1])
+		
+		if r == "(hex)"  {
+			if i > 0 {
+				decimal := Hex(words[i-1])
 			if decimal != -1 {
 				words[i-1] = strconv.Itoa(decimal)
 			}
+			}
+			
 			words[i] = ""
-			i = 0
+			
 		}
 
-		if r == "(bin)" && i > 0 {
+		if r == "(bin)" {
+			if i > 0 {
 			decimal := Bin(words[i-1])
 			if decimal != -1 {
 				words[i-1] = strconv.Itoa(decimal)
 			}
+		}
 			words[i] = ""
-			i = 0
+			
 
 		}
 
-		if r == "(cap)" && i > 0 {
-			words[i-1] = Cap(words[i-1])
+		if r == "(cap)" {
+			if i > 0 {
+				words[i-1] = Cap(words[i-1])
+			}
+			
 			words[i] = ""
-			i = 0
+			
 		}
 
 		if r == "(cap," {
+			
 			valueStr := words[i+1]
 			valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
-
-			for j := i - 1; j >= i-valueInt; j-- {
+			if i >= valueInt {
+				for j := i - 1; j >= i-valueInt; j-- {
 				words[j] = Cap(words[j])
 			}
+			}
+
+			
 
 			words[i] = ""
 			words[i+1] = ""
-			i = 0
+			
 		}
 
-		if r == "(low)" && i > 0 {
-			words[i-1] = Low(words[i-1])
+		if r == "(low)"  {
+			if i > 0 {
+				words[i-1] = Low(words[i-1])
+			}
+			
 			words[i] = ""
-			i = 0
+			
 		}
 
 		if r == "(low," {
 			valueStr := words[i+1]
 			valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
-
+			if i >= valueInt {
 			for j := i - 1; j >= i-valueInt; j-- {
 				words[j] = Low(words[j])
 			}
-
+		}
 			words[i] = ""
 			words[i+1] = ""
-			i = 0
+			
 		}
 
-		if r == "(up)" && i > 0 {
+		if r == "(up)"  {
+			if i > 0 {
 			words[i-1] = Up(words[i-1])
+			}
 			words[i] = ""
-			i = 0
+			
 		}
 
 		if r == "(up," {
 			valueStr := words[i+1]
 			valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
-
+			if i >= valueInt {
 			for j := i - 1; j >= i-valueInt; j-- {
 				words[j] = Up(words[j])
 			}
-
+		}
 			words[i] = ""
 			words[i+1] = ""
-			i = 0
+			
 		}
-
 	}
 
 	return words
@@ -211,11 +228,12 @@ func FixQuotes(lines []string) [][]string {
 		}
 		for i := 0; i < len(temp); i++ {
 			r := temp[i]
-			if r == "'" && first {
+			if r == "'" && first && i+1 < len(temp) {
 				temp[i+1] = "'" + temp[i+1]
 				temp[i] = ""
 				first = false
-			} else if r == "'" && !first {
+				continue
+			} else if r == "'"  {
 				temp[i-1] = temp[i-1] + "'"
 				temp[i] = ""
 				first = true
@@ -241,32 +259,59 @@ func FixQuotes(lines []string) [][]string {
 				i = 0
 			}
 			AutoCorrect(words)
-
 		}
 		temp = []string{}
 		words = AtoAn(words)
 		result = append(result, words)
+		
 	}
+
 	return result
 
 }
-
 func main() {
-	content, _ := os.ReadFile("input.txt")
-	lines := strings.Split(string(content), "\n")
-	result := FixQuotes(lines)
-	resultF := ""
+    if len(os.Args) < 3 {
+        fmt.Println("Usage: go run . input.txt output.txt")
+        return
+    }
 
-	fmt.Println(result)
-	for i, r := range result {
-		for _, k := range Clean(r) {
-			resultF += k + " "
-		}
-		if i < len(result)-1 {
-			resultF += "\n"
-		}
-	}
+    inputFile := os.Args[1]
+    outputFile := os.Args[2]
 
-	fmt.Print(resultF)
+    // Check file extensions
+    if !strings.HasSuffix(strings.ToLower(inputFile), ".txt") {
+        fmt.Println("Error: input file must have .txt extension")
+        return
+    }
 
+    if !strings.HasSuffix(strings.ToLower(outputFile), ".txt") {
+        fmt.Println("Error: output file must have .txt extension")
+        return
+    }
+
+    content, err := os.ReadFile(inputFile)
+    if err != nil {
+        fmt.Println("Error reading input:", err)
+        return
+    }
+
+    lines := strings.Split(string(content), "\n")
+    result := FixQuotes(lines)
+    resultF := ""
+
+    for i, r := range result {
+        for _, k := range Clean(r) {
+            resultF += k + " "
+        }
+        if i < len(result)-1 {
+            resultF += "\n"
+        }
+    }
+
+    err = os.WriteFile(outputFile, []byte(resultF), 0644)
+    if err != nil {
+        fmt.Println("Error writing output:", err)
+        return
+    }
 }
+
