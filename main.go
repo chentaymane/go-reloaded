@@ -81,6 +81,7 @@ func AutoCorrect(words []string) []string {
 			}
 
 			words[i] = ""
+			words = Clean(words)
 
 		}
 
@@ -92,6 +93,7 @@ func AutoCorrect(words []string) []string {
 				}
 			}
 			words[i] = ""
+			words = Clean(words)
 
 		}
 
@@ -101,22 +103,24 @@ func AutoCorrect(words []string) []string {
 			}
 
 			words[i] = ""
+			words = Clean(words)
 
 		}
 
-		if r == "(cap," {
+		if r == "(cap," && i+1 < len(words) {
 
 			valueStr := words[i+1]
-			valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
-			if i >= valueInt {
-				for j := i - 1; j >= i-valueInt; j-- {
-					words[j] = Cap(words[j])
+			if strings.HasSuffix(valueStr, ")") {
+				valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
+				if i >= valueInt {
+					for j := i - 1; j >= i-valueInt; j-- {
+						words[j] = Cap(words[j])
+					}
 				}
 			}
-
 			words[i] = ""
 			words[i+1] = ""
-
+			words = Clean(words)
 		}
 
 		if r == "(low)" {
@@ -125,50 +129,60 @@ func AutoCorrect(words []string) []string {
 			}
 
 			words[i] = ""
+			words = Clean(words)
 
 		}
 
-		if r == "(low," {
+		if r == "(low," && i+1 < len(words) {
 			valueStr := words[i+1]
-			valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
-			if i >= valueInt {
-				for j := i - 1; j >= i-valueInt; j-- {
-					words[j] = Low(words[j])
+			if strings.HasSuffix(valueStr, ")") {
+				valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
+				if i >= valueInt {
+					for j := i - 1; j >= i-valueInt; j-- {
+						words[j] = Low(words[j])
+					}
 				}
 			}
 			words[i] = ""
 			words[i+1] = ""
+			words = Clean(words)
 
 		}
 
 		if r == "(up)" {
-			if i-1 > 0 {
+			if i-1 >= 0 {
 				words[i-1] = Up(words[i-1])
 			}
+
 			words[i] = ""
+			words = Clean(words)
 
 		}
 
-		if r == "(up," {
+		if r == "(up," && i+1 < len(words) {
 			valueStr := words[i+1]
-			valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
-			if i >= valueInt {
-				for j := i - 1; j >= i-valueInt; j-- {
-					words[j] = Up(words[j])
+			if strings.HasSuffix(valueStr, ")") {
+
+				valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
+				if i >= valueInt {
+					for j := i - 1; j >= i-valueInt; j-- {
+						words[j] = Up(words[j])
+					}
 				}
 			}
 			words[i] = ""
 			words[i+1] = ""
+			words = Clean(words)
 
 		}
 	}
 
 	return words
 }
+
 func Clean(words []string) []string {
 	wordsClean := []string{}
 	for _, r := range words {
-
 		if r != "" {
 			wordsClean = append(wordsClean, r)
 		}
@@ -186,6 +200,7 @@ func AtoAn(words []string) []string {
 	}
 	return words
 }
+
 func FixQuotes(lines []string) [][]string {
 	words := []string{}
 	temp := []string{}
@@ -195,61 +210,104 @@ func FixQuotes(lines []string) [][]string {
 	for _, r := range lines {
 		str = ""
 		for _, k := range r {
-
 			if k == '.' || k == ',' || k == '!' || k == '?' || k == ':' || k == ';' {
-				str += string(k) + " "
+				str += " "+string(k) + " "
 			} else {
 				str += string(k)
 			}
-
 		}
 
 		words = strings.Split(str, " ")
+
 		words = Clean(words)
-		for i, k := range words {
+		for _, k := range words {
 
-			if strings.HasPrefix(k, "'") && !strings.HasSuffix(k, "'") {
-				temp = append(temp, "'")
-				temp = append(temp, words[i][1:])
-			} else if strings.HasSuffix(k, "'") && !strings.HasPrefix(k, "'") {
-				temp = append(temp, words[i][:len(k)-1])
-				temp = append(temp, "'")
-
-			} else {
+			// CASE: multiple quotes ''' or '' etc (only quotes, no other characters)
+			if strings.Trim(k, "'") == "" {
+				// keep as ONE token: ''' or '' etc.
 				temp = append(temp, k)
+				continue
+			}
 
+			// Count leading quotes
+			leadingQuotes := 0
+			for strings.HasPrefix(k, "'") {
+				leadingQuotes++
+				k = k[1:]
+			}
+
+			// Add leading quotes as a single token if there are any
+			if leadingQuotes > 0 {
+				temp = append(temp, strings.Repeat("'", leadingQuotes))
+			}
+
+			// Count trailing quotes
+			trailingQuotes := 0
+			for strings.HasSuffix(k, "'") {
+				trailingQuotes++
+				k = k[:len(k)-1]
+			}
+
+			// push the core word
+			if k != "" {
+				temp = append(temp, k)
+			}
+
+			// Add trailing quotes as a single token if there are any
+			if trailingQuotes > 0 {
+				temp = append(temp, strings.Repeat("'", trailingQuotes))
 			}
 		}
+
+		temp = Clean(temp)
+				temp = AtoAn(temp)
+
 		for i := 0; i < len(temp); i++ {
+
 			r := temp[i]
-			if r == "'" && first && i+1 < len(temp) {
-				temp[i+1] = "'" + temp[i+1]
+			if i > 0 && (r == "." || r == "," || r == "!" || r == "?" || r == ":" || r == ";") {
+				if temp[i-1] != "'" && !strings.Contains(temp[i-1], "'") {
+					temp[i-1] = temp[i-1] + r
+					temp[i] = ""
+					temp = Clean(temp)
+					i = 0
+				}
+			}
+		}
+		temp = AutoCorrect(temp)
+		for i := 0; i < len(temp); i++ {
+
+			r := temp[i]
+			// Check if r contains only quotes
+			if strings.Trim(r, "'") == "" && first && i+1 < len(temp) {
+				temp[i+1] = r + temp[i+1]
 				temp[i] = ""
 				first = false
-				continue
-			} else if r == "'" {
-				temp[i-1] = temp[i-1] + "'"
+
+			} else if strings.Trim(r, "'") == "" && !first {
+				temp[i-1] = temp[i-1] + r
 				temp[i] = ""
 				first = true
 			}
 
 		}
 		first = true
+		temp = Clean(temp)
+		for i := 0; i < len(temp); i++ {
 
-		words = temp
-		words = Clean(words)
-		for i := 0; i < len(words); i++ {
-
-			r := words[i]
-			if r == "." || r == "," || r == "!" || r == "?" || r == ":" || r == ";" {
-				words[i-1] = words[i-1] + r
-				words[i] = ""
-				words = Clean(words)
+			r := temp[i]
+			if i > 0 && (r == "." || r == "," || r == "!" || r == "?" || r == ":" || r == ";") {
+				temp[i-1] = temp[i-1] + r
+				temp[i] = ""
+				temp = Clean(temp)
 				i = 0
 
 			}
-			words = AutoCorrect(words)
+			temp = AutoCorrect(temp)
 		}
+		words = temp
+		words = Clean(words)
+
 		temp = []string{}
 		words = AtoAn(words)
 		result = append(result, words)
@@ -257,8 +315,8 @@ func FixQuotes(lines []string) [][]string {
 	}
 
 	return result
-
 }
+
 func main() {
 	if len(os.Args) < 3 {
 		fmt.Println("Usage: go run . input.txt output.txt")
@@ -298,7 +356,7 @@ func main() {
 		}
 	}
 
-	err = os.WriteFile(outputFile, []byte(resultF), 0644)
+	err = os.WriteFile(outputFile, []byte(resultF), 0o644)
 	if err != nil {
 		fmt.Println("Error writing output:", err)
 		return
