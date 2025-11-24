@@ -13,13 +13,14 @@ go run . sample.txt result.txt
 There it was. a Amazing rock! a
 I don't ,mind ' being 'here .
 gg ' a sss fffffffffff' hh
-gg ' a' hh 
+gg ' a' hh      
 ' gg ' , ' hh '
 lot (cap)
 sl anaymne (up)
 'a uto' 
 
-1E (hex)
+1E (hex) jgjh
+(ahmed)(is)(cap)
 10 (bin)
 
         'gggggggggg' ,'gggggggg',
@@ -49,7 +50,8 @@ karim said : ' it's a apple '
 ' h '  ,
 file.txt
 'doo'h ' 'ggg'
-I am exactly how they describe me: ' awesome '  .' .
+I am exactly how they describe me: ' awesome '  . 
+'r' 'd'  ....
 'hello 'hi
 ' h
 hello ,f (up, 7)
@@ -68,13 +70,13 @@ a apple
 '   jjjjjjj hh'h   ',  jkjkjk '
 hhhh . . . .. jjjj
 'heello.'
-'r' 'd'  ,;;;
+
 
 test urur (up,    1)
 test (            up       )
 test urur (up,
-ddDggg (cap)
-
+0dDggg (cap)
+''' f'''''''''
 
 'a', 'b' ,, 
 , 'test.'. hh 
@@ -86,3 +88,17 @@ a apple
 a a a
 "a apple"
 ,a ull
+hey(hey)hey (cap)
+don't)hey (cap)
+
+(1A (hex) )
+
+🤯 (up)
+cap cap (cap, 2), hhhh
+(cap),
+''' hh ''
+hello 'hhH' (up)
+hhhhh 'jjjj' (up, 2) ??
+.!;;gggg
+If I make you BREAKFAST IN BED (low, 3) just say thank you instead of: how (cap) did you get in my house (up, 2) ?
+harold wilson (cap, 2) : ' I am a optimist ,but a optimist who carries a raincoat . '

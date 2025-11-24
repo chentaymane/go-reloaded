@@ -7,6 +7,7 @@ import (
 )
 
 func Hex(arg string) int {
+
 	value := arg
 	result, err := strconv.ParseInt(value, 16, 64)
 	if err != nil {
@@ -25,23 +26,21 @@ func Bin(arg string) int {
 }
 
 func Cap(s string) string {
-	runes := []rune(s)
-	isNewWord := true
+	result := ""
+	capitalizeNext := true
 
-	for i := 0; i < len(runes); i++ {
-		if unicode.IsLetter(runes[i]) || unicode.IsDigit(runes[i]) {
-			if isNewWord {
-				runes[i] = unicode.ToUpper(runes[i])
-				isNewWord = false
+	for _, r := range s {
+		if unicode.IsLetter(r) || unicode.IsDigit(r) {
+			if capitalizeNext {
+				r = unicode.ToUpper(r)
+				capitalizeNext = false
 			} else {
-				runes[i] = unicode.ToLower(runes[i])
+				r = unicode.ToLower(r)
 			}
-		} else {
-			isNewWord = true
 		}
+		result += string(r)
 	}
-
-	return string(runes)
+	return result
 }
 
 func Low(s string) string {

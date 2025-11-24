@@ -16,8 +16,10 @@ func AutoCorrect(words []string) []string {
 					words[i-1] = strconv.Itoa(decimal)
 				}
 			}
+
 			words[i] = ""
 			words = Clean(words)
+
 		}
 
 		if r == "(bin)" {
@@ -29,18 +31,21 @@ func AutoCorrect(words []string) []string {
 			}
 			words[i] = ""
 			words = Clean(words)
+
 		}
 
 		if r == "(cap)" {
 			if i > 0 {
 				words[i-1] = Cap(words[i-1])
 			}
+
 			words[i] = ""
 			words = Clean(words)
+
 		}
 
-		if r == "(cap," && i+1 < len(words) {
-			valueStr := words[i+1]
+		if r == "(cap" && words[i+1] == "," && i+2 < len(words) {
+			valueStr := words[i+2]
 			if strings.HasSuffix(valueStr, ")") {
 				valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
 				if i >= valueInt {
@@ -48,9 +53,11 @@ func AutoCorrect(words []string) []string {
 						words[j] = Cap(words[j])
 					}
 				}
+				words[i] = ""
+				words[i+1] = ""
+				words[i+2] = ""
 			}
-			words[i] = ""
-			words[i+1] = ""
+
 			words = Clean(words)
 		}
 
@@ -58,12 +65,14 @@ func AutoCorrect(words []string) []string {
 			if i > 0 {
 				words[i-1] = Low(words[i-1])
 			}
+
 			words[i] = ""
 			words = Clean(words)
+
 		}
 
-		if r == "(low," && i+1 < len(words) {
-			valueStr := words[i+1]
+		if r == "(low" && words[i+1] == "," && i+2 < len(words) {
+			valueStr := words[i+2]
 			if strings.HasSuffix(valueStr, ")") {
 				valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
 				if i >= valueInt {
@@ -71,9 +80,11 @@ func AutoCorrect(words []string) []string {
 						words[j] = Low(words[j])
 					}
 				}
+				words[i] = ""
+				words[i+1] = ""
+				words[i+2] = ""
+
 			}
-			words[i] = ""
-			words[i+1] = ""
 			words = Clean(words)
 		}
 
@@ -81,24 +92,31 @@ func AutoCorrect(words []string) []string {
 			if i-1 >= 0 {
 				words[i-1] = Up(words[i-1])
 			}
+
 			words[i] = ""
 			words = Clean(words)
+
 		}
 
-		if r == "(up," && i+1 < len(words) {
-			valueStr := words[i+1]
+		if r == "(up" && words[i+1] == "," && i+2 < len(words) {
+			valueStr := words[i+2]
 			if strings.HasSuffix(valueStr, ")") {
+
 				valueInt, _ := strconv.Atoi(valueStr[:len(valueStr)-1])
 				if i >= valueInt {
 					for j := i - 1; j >= i-valueInt; j-- {
 						words[j] = Up(words[j])
 					}
 				}
+				words[i] = ""
+				words[i+1] = ""
+				words[i+2] = ""
+
 			}
-			words[i] = ""
-			words[i+1] = ""
+
 			words = Clean(words)
 		}
 	}
+
 	return words
 }
