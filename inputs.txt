@@ -4,7 +4,7 @@ hello ,' (up)
 Simply add 漢字 (hex) and 12 (bin) and you will see the result is 68.
 Welcome to the Brooklyn bridge (cap)
 I should stop SHOUTING (low)
-Ready, set, go (up, 2) !
+Ready, set go (up, 2) !
 hh This is so      Exciting (up, 2)
 I was sitting over there ,and then BAMM !!
 Punctuation tests are ... kinda boring ,what do you think ?
@@ -96,9 +96,5 @@ don't)hey (cap)
 🤯 (up)
 cap cap (cap, 2), hhhh
 (cap),
-''' hh ''
-hello 'hhH' (up)
-hhhhh 'jjjj' (up, 2) ??
-.!;;gggg
-If I make you BREAKFAST IN BED (low, 3) just say thank you instead of: how (cap) did you get in my house (up, 2) ?
-harold wilson (cap, 2) : ' I am a optimist ,but a optimist who carries a raincoat . '
+
+hello ' hhH '  (up)

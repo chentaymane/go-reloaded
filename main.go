@@ -14,11 +14,6 @@ func main() {
 
 	inputFile := os.Args[1]
 	outputFile := os.Args[2]
-	fmt.Println(len(inputFile))
-		fmt.Println(len(outputFile))
-			fmt.Println(inputFile)
-		fmt.Println(outputFile)
-
 
 	if !strings.HasSuffix(strings.ToLower(inputFile), ".txt") {
 		fmt.Println("Error: input file must have .txt extension")
@@ -39,11 +34,14 @@ func main() {
 	lines := strings.Split(string(content), "\n")
 	result := FixQuotes(lines)
 	resultF := ""
-
+	
 	for i, r := range result {
+	
 		for _, k := range Clean(r) {
+			
 			resultF += k + " "
 		}
+		
 		if i < len(result)-1 {
 			resultF += "\n"
 		}
@@ -54,4 +52,6 @@ func main() {
 		fmt.Println("Error writing output:", err)
 		return
 	}
+
+	
 }

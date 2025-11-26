@@ -7,7 +7,6 @@ import (
 )
 
 func Hex(arg string) int {
-
 	value := arg
 	result, err := strconv.ParseInt(value, 16, 64)
 	if err != nil {
@@ -44,24 +43,14 @@ func Cap(s string) string {
 }
 
 func Low(s string) string {
-	var result string
-	for _, r := range s {
-		if r >= 'A' && r <= 'Z' {
-			r = r + 32
-		}
-		result += string(r)
-	}
+	result := strings.ToLower(s)
+
 	return result
 }
 
 func Up(s string) string {
-	var result string
-	for _, r := range s {
-		if r >= 'a' && r <= 'z' {
-			r = r - 32
-		}
-		result += string(r)
-	}
+	result := strings.ToUpper(s)
+
 	return result
 }
 
