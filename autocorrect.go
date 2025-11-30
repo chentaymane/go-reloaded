@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -19,6 +20,7 @@ func AutoCorrect(words []string) []string {
 
 			words[i] = ""
 			words = Clean(words)
+			i = 0
 
 		}
 
@@ -31,16 +33,20 @@ func AutoCorrect(words []string) []string {
 			}
 			words[i] = ""
 			words = Clean(words)
+			i = 0
 
 		}
 
 		if r == "(cap)" {
+			fmt.Println("2")
+
 			if i > 0 {
 				words[i-1] = Cap(words[i-1])
 			}
 
 			words[i] = ""
 			words = Clean(words)
+			i = 0
 
 		}
 
@@ -59,16 +65,21 @@ func AutoCorrect(words []string) []string {
 			}
 
 			words = Clean(words)
+			i = 0
+
 		}
 
 		if r == "(low)" {
+			fmt.Println("1")
 			if i > 0 {
 				words[i-1] = Low(words[i-1])
 			}
 
 			words[i] = ""
 			words = Clean(words)
+			fmt.Println(words)
 
+			i = 0
 		}
 
 		if r == "(low" && words[i+1] == "," && i+2 < len(words) {
@@ -86,15 +97,20 @@ func AutoCorrect(words []string) []string {
 
 			}
 			words = Clean(words)
+			i = 0
+
 		}
 
 		if r == "(up)" {
+			fmt.Println("3")
+
 			if i-1 >= 0 {
 				words[i-1] = Up(words[i-1])
 			}
 
 			words[i] = ""
 			words = Clean(words)
+			i = 0
 
 		}
 
@@ -115,6 +131,8 @@ func AutoCorrect(words []string) []string {
 			}
 
 			words = Clean(words)
+			i = 0
+
 		}
 	}
 

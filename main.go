@@ -34,24 +34,19 @@ func main() {
 	lines := strings.Split(string(content), "\n")
 	result := FixQuotes(lines)
 	resultF := ""
-	
+
 	for i, r := range result {
-	
 		for _, k := range Clean(r) {
-			
 			resultF += k + " "
 		}
-		
 		if i < len(result)-1 {
 			resultF += "\n"
 		}
 	}
 
-	err = os.WriteFile(outputFile, []byte(resultF), 0o644)
+	err = os.WriteFile(outputFile, []byte(strings.Trim(resultF," ")), 0o644)
 	if err != nil {
 		fmt.Println("Error writing output:", err)
 		return
 	}
-
-	
 }

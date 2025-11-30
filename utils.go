@@ -43,14 +43,24 @@ func Cap(s string) string {
 }
 
 func Low(s string) string {
-	result := strings.ToLower(s)
-
+	var result string
+	for _, r := range s {
+		if r >= 'A' && r <= 'Z' {
+			r = r + 32
+		}
+		result += string(r)
+	}
 	return result
 }
 
 func Up(s string) string {
-	result := strings.ToUpper(s)
-
+	var result string
+	for _, r := range s {
+		if r >= 'a' && r <= 'z' {
+			r = r - 32
+		}
+		result += string(r)
+	}
 	return result
 }
 

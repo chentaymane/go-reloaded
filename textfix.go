@@ -2,8 +2,6 @@ package main
 
 import (
 	//"fmt"
-
-	"fmt"
 	"strings"
 )
 
@@ -29,7 +27,6 @@ func FixQuotes(lines []string) [][]string {
 	result := [][]string{}
 	first := true
 	str := ""
-	fmt.Println(lines)
 	for _, r := range lines {
 		str = ""
 		for _, k := range r {
@@ -41,7 +38,7 @@ func FixQuotes(lines []string) [][]string {
 		}
 
 		words = strings.Split(str, " ")
-		fmt.Println(words)
+
 		words = Clean(words)
 		words =AutoCorrect(words)
 		for _, k := range words {
@@ -82,6 +79,7 @@ func FixQuotes(lines []string) [][]string {
 
 		temp = Clean(temp)
 		temp = AtoAn(temp)
+		// fmt.Println(temp)
 		temp = AutoCorrect(temp)
 
 		for i := 0; i < len(temp); i++ {
@@ -112,6 +110,11 @@ func FixQuotes(lines []string) [][]string {
 				first = true
 			}
 		}
+		first = true
+		temp = Clean(temp)
+		temp = AutoCorrect(temp)
+		// fmt.Println(temp)
+
 		for i := 0; i < len(temp); i++ {
 
 			r := temp[i]
@@ -124,12 +127,6 @@ func FixQuotes(lines []string) [][]string {
 			}
 			temp = AutoCorrect(temp)
 		}
-		first = true
-		temp = Clean(temp)
-		temp = AutoCorrect(temp)
-		// fmt.Println(temp)
-
-		
 		words = temp
 		words = Clean(words)
 
